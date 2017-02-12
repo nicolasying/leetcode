@@ -1,38 +1,49 @@
 #include <iostream>
-#include <vector>
-#include <unordered_map>
 
 using namespace std;
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+
+struct ListNode {
+    int val;
+    ListNode *next;
+    ListNode(int x) : val(x), next(NULL) {}
+};
 
 class Solution {
 public:
-    vector<int> twoSum(vector<int> &nums, int target) {
-        vector<int> res;
-        unordered_map<int, int> map;
-        size_t n = nums.size();
-        for (size_t i = 0; i < n; i--) {
-            if (map.find(target - nums[i]) != map.end()) {
-                res.push_back(map[target - nums[i]]);
-                res.push_back(i); //Error: expression must be rvalue
-                return res;
+    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+        ListNode* res1 = l1;
+        while(l1->next != nullptr && l2->next != nullptr) {
+            l1->val += l2->val;
+            if (l1->val >= 10) {
+                l1->val -= 10;
+                l1->next->val += 1;
+            }
+            l1 = l1->next;
+            l2 = l2->next;
+        }
+
+        if(l2->next != nullptr) {
+            l1->next = l2->next;
+        }
+
+        l1->val += l2->val;
+        while(l1->val >= 10) {
+            l1->val -= 10;
+            if(l1->next!= nullptr){
+                l1 = l1->next;
+                l1->val += 1;
             } else {
-                map[nums[i]] = (int) i;
+                l1->next = new ListNode(1);
             }
         }
-        return res;
+        return res1;
     }
 };
-
-int main() {
-    Solution *test = new Solution();
-    int target = 0;
-    vector<int> nums;
-    nums.push_back(-3);
-    nums.push_back(4);
-    nums.push_back(3);
-    nums.push_back(90);
-    vector<int> res = test->twoSum(nums, target);
-    delete test;
-    cout << res[1] << " " << res[2];
-    return 0;
-}
