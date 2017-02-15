@@ -1,49 +1,36 @@
 #include <iostream>
+#include <string>
+#include <vector>
 
 using namespace std;
-/**
- * Definition for singly-linked list.
- * struct ListNode {
- *     int val;
- *     ListNode *next;
- *     ListNode(int x) : val(x), next(NULL) {}
- * };
- */
-
-struct ListNode {
-    int val;
-    ListNode *next;
-    ListNode(int x) : val(x), next(NULL) {}
-};
-
 class Solution {
 public:
-    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
-        ListNode* res1 = l1;
-        while(l1->next != nullptr && l2->next != nullptr) {
-            l1->val += l2->val;
-            if (l1->val >= 10) {
-                l1->val -= 10;
-                l1->next->val += 1;
-            }
-            l1 = l1->next;
-            l2 = l2->next;
-        }
-
-        if(l2->next != nullptr) {
-            l1->next = l2->next;
-        }
-
-        l1->val += l2->val;
-        while(l1->val >= 10) {
-            l1->val -= 10;
-            if(l1->next!= nullptr){
-                l1 = l1->next;
-                l1->val += 1;
-            } else {
-                l1->next = new ListNode(1);
+    int lengthOfLongestSubstring(string s) {
+        unsigned long n = s.length();
+        int maxLength = 0, indS = 0, indE = 0;
+        vector<bool> ind(128, 0);
+        for (; indE < n; indE++) {
+            if (ind[s[indE]] != 0) { // repetition detected
+                maxLength = max(indE - indS, maxLength);
+                while (s[indS] != s[indE]) {
+                    ind[s[indS]] = 0;
+                    indS++;
+                }
+                indS++;
+            } else { // continue forwarding the point ahead
+                ind[s[indE]] = 1;
             }
         }
-        return res1;
+        return max(indE - indS, maxLength);
     }
 };
+
+int main () {
+    Solution instance;
+    string s = "a";
+    while (1) {
+        cin >> s;
+        cout << instance.lengthOfLongestSubstring(s);
+    }
+    return 0;
+}
